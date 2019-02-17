@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rolodecks - Sign Up</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- favicon --> <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/uikit.min.css') }}" />
+    <script src="{{ url_for('static', filename='js/uikit.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/uikit-icons.min.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Raleway:500,600,700,800" rel="stylesheet">
+
+    <!-- FIREBASE INIT --->
+    <script src="https://www.gstatic.com/firebasejs/5.8.3/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyA023tPMmwN6_oxut1PcNQBtGhiwaG2iBQ",
+        authDomain: "rolodecks-74559.firebaseapp.com",
+        databaseURL: "https://rolodecks-74559.firebaseio.com",
+        projectId: "rolodecks-74559",
+        storageBucket: "rolodecks-74559.appspot.com",
+        messagingSenderId: "841814280785"
+      };
+      firebase.initializeApp(config);
+    </script>
+
+    <!-- STYLE -->
+    <style>
+    .navText{
+        font-family: Raleway;
+        font-weight: 700;
+        color: white;
+        text-decoration: none;
+    }
+    .hide{
+        visibility: hidden;
+    }
+    .logText{
+       font-family: Raleway;
+       font-weight: 500;
+       font-size: 2em;
+       color: white;
+       text-align: center;
+    }
+    .loginButton {
+        background-color: #4acb44;
+        border: none;
+        font-family: Raleway;
+        font-weight: 800;
+        font-size: 1em;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-radius: 30px;
+    }
+    </style>
+</head>
+<body>
+
+<div id="navAndBackground"uk-height-viewport="expand" class="uk-background-cover uk-width-expand" style="background-image: url('static/Graphics/back.png');">
+
+    <div id="navigation">
+
+        <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
+
+            <div class="uk-navbar-left navText">
+
+                <ul class="uk-navbar-nav">
+                    <a class="uk-navbar-item uk-logo" href="/"><img src="/static/Graphics/logo.png" style="height: 80px;"></a>
+                    <li><a href="/explore" style="color: white;">EXPLORE</a></li>
+                </ul>
+
+            </div>
+
+            <div class="uk-navbar-right" navText>
+
+                <ul class="uk-navbar-nav">
+                    <li><a id="home" class="hide" href="/profile" style="color:white; font-family: Raleway; font-weight: 700;">YOUR PROFILE</a></li>
+                    <li><a id="logout" class="hide" style="color:white; font-family: Raleway; font-weight: 700;">LOGOUT</a></li>
+                </ul>
+
+            </div>
+
+        </nav>
+
+    </div>
+
+    <div id="loginForm" class="uk-padding-large">
+        <div id="Login" class="uk-padding-large" align="center">
+            <p class="logText uk-padding">welcome to the family.</p>
+            <form style="width: 500px;">
+                <div class="uk-margin">
+                    <input id="user" class="uk-input" type="text" placeholder="Username" style="border-radius: 15px;">
+                </div>
+                <div class="uk-margin">
+                    <input id="email" class="uk-input" type="text" placeholder="Email" style="border-radius: 15px;">
+                </div>
+                <div class="uk-margin">
+                    <input id="pass" class="uk-input" type="password" placeholder="Password" style="border-radius: 15px;">
+                </div>
+            </form>
+
+        </div>
+
+        <div id="Button" align="center" class="uk-card button-padding-small">
+
+            <div align="center">
+                <button id="loginButton" class="loginButton" style="text-decoration: none;">SIGN UP</button>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+
+<script>
+(function() {
+
+
+    //Get Element
+    const txtEmail = document.getElementById('email');
+    const txtPassword = document.getElementById('pass');
+    const btnSignUp = document.getElementById('loginButton');
+    const btnHome = document.getElementById('home');
+    const btnLogout = document.getElementById('logout');
+
+    function json(data) {
+        $.ajax
+        ({
+            type: "POST",
+            url: '/userUpload',
+            dataType: 'json',
+            async: false,
+            data: data,
+            contentType: 'application/json'
+        })
+    }
+
+    //Login Event
+    btnSignUp.addEventListener('click', e => {
+        //Get email and pass
+        const email = txtEmail.value;
+        const pass = txtPassword.value;
+        const auth = firebase.auth();
+
+        //sign in
+        const promise = auth.createUserWithEmailAndPassword(email, pass);
+        promise.catch(e => console.log(e.message));
+    });
+
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+        if (firebaseUser) {
+
+            //custom usernameDatabase entry
+            var txtUsername = $("input#user").val();
+            console.log(txtUsername)
+            var userID = firebaseUser.uid
+            var data = JSON.stringify({"uid": userID, "username": txtUsername})
+            json(data)
+
+            window.location.replace("/");
+            btnLogout.classList.remove('hide');
+            btnHome.classList.remove('hide');
+        } else {
+            console.log('not logged in');
+            btnLogout.classList.add('hide');
+            btnHome.classList.add('hide');
+        }
+    });
+}());
+</script>
+
+
+</html>

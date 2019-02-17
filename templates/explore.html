@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rolodecks - Explore</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- favicon --> <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/uikit.min.css') }}" />
+    <script src="{{ url_for('static', filename='js/uikit.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/uikit-icons.min.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Raleway:500,600,700,800" rel="stylesheet">
+
+    <style>
+        .navText{
+            font-family: Raleway;
+            font-weight: 700;
+            color: #362c2b;
+            text-decoration: none;
+        }
+
+        .headerText{
+            font-family: Raleway;
+            font-weight: 500;
+            font-size: 3em;
+            color: #362c2b;
+            text-decoration: none;
+        }
+
+        .hide{
+        visibility: hidden;
+        }
+
+        .loginButton {
+          background-color: white;
+          border: none;
+          font-family: Raleway;
+          font-weight: 800;
+          font-size: 1em;
+          color: #362c2b;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          border-radius: 30px;
+        }
+
+        .signupButton {
+          background-color: #4acb44;
+          border: none;
+          font-family: Raleway;
+          font-weight: 800;
+          font-size: 1em;
+          color: white;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          border-radius: 30px;
+        }
+
+        .publicButton {
+          background-color: #362c2b;
+          border: none;
+          font-family: Raleway;
+          font-weight: 800;
+          font-size: 1em;
+          color: white;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          border-radius: 30px;
+        }
+        .projButton {
+          background-color: #362c2b;
+          border: none;
+          font-family: Raleway;
+          font-weight: 800;
+          font-size: 1em;
+          color: white;
+          padding: 10px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          border-radius: 30px;
+        }
+
+        .breakBar{
+          width: 100%; height: 2px;
+          border-style: solid;
+          border-color: #362c2b;
+          background-color: #362c2b;
+          border-radius: 10px;
+        }
+
+        div.fill {
+            position:relative;
+            border:1px dashed red;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            overflow:hidden
+        }
+        div.fill img {
+            flex-shrink:0;
+            min-width:100%;
+            min-height:100%
+        }
+        header,footer{
+            position:absolute;
+            left:0
+        }
+        header { top:20% }
+        footer { bottom:20% }
+
+        .container {
+            width: 150px;
+            height: 100px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+        }​
+    </style>
+
+    <!-- FIREBASE INIT --->
+    <script src="https://www.gstatic.com/firebasejs/5.8.3/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyA023tPMmwN6_oxut1PcNQBtGhiwaG2iBQ",
+        authDomain: "rolodecks-74559.firebaseapp.com",
+        databaseURL: "https://rolodecks-74559.firebaseio.com",
+        projectId: "rolodecks-74559",
+        storageBucket: "rolodecks-74559.appspot.com",
+        messagingSenderId: "841814280785"
+      };
+      firebase.initializeApp(config);
+    </script>
+
+</head>
+<body>
+
+<div id="main" uk-height-viewport="expand" class="uk-background-cover uk-width-expand">
+
+    <div id="navigation">
+
+        <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
+
+            <div class="uk-navbar-left navText">
+
+                <ul class="uk-navbar-nav">
+                    <a class="uk-navbar-item uk-logo" href="/"><img src="/static/Graphics/logo.png" style="height: 80px;"></a>
+                    <li><a href="/explore" style="color: #362c2b;">EXPLORE</a></li>
+                </ul>
+
+            </div>
+
+            <div class="uk-navbar-right" navText>
+
+                <ul class="uk-navbar-nav">
+                    <li><a id="home" class="hide" href="/profile" style="color: #362c2b; font-family: Raleway; font-weight: 700;">YOUR PROFILE</a></li>
+                    <li><a id="logout" class="hide" style="color: #362c2b; font-family: Raleway; font-weight: 700;">LOGOUT</a></li>
+                </ul>
+
+            </div>
+
+        </nav>
+
+    </div>
+
+    <h1 class="uk-width-expand navText uk-padding-small" style="text-align: center; color:#4acb44; font-size: 3em;">featured decks</h1>
+
+    <div id="featuredContainer" class="uk-child-width-1-3 uk-padding" uk-grid style="text-align:center"></div>
+
+    <div class="uk-padding-small"><div class="breakBar"></div></div>
+
+    <h1 class="uk-width-expand navText uk-padding-small uk-padding-remove-top" style="text-align: center; color:#362c2b; font-size: 3em;">explore even more</h1>
+
+    <div id="exploreContainer" class="uk-child-width-1-3 uk-padding" uk-grid style="text-align:center"></div>
+
+</div>
+
+</body>
+<script>
+    //choose 'featured decks' from weighted list
+
+    //WEIGHT DISABLED DUE TO NO IMPLEMENTATION AT THE MOMENT
+    /*
+    $.ajax({
+        dataType: "json",
+        url: "/static/userData.json",
+        cache: false,  //do not cache
+        success: function(data){
+
+            var arrItems = [];
+            $.each(data, function (index, value) {
+                arrItems.push(value);
+            });
+
+            var randomizer = function(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            };
+
+            var createWeightedList = function(list, weight) {
+                var weighed_list = [];
+
+                // Loop over weights
+                for (var i = 0; i < weight.length; i++) {
+                    var multiples = weight[i] * 100;
+
+                    // Loop over the list of items
+                    for (var j = 0; j < multiples; j++) {
+                        weighed_list.push(list[i]);
+                    }
+                }
+
+                return weighted_list;
+            };
+
+            for (var i = 0; i < arrItems.length ; i++) {
+                var users = arrItems[i]['uid']
+                var userWeights = arrItems[i]['weight']
+                var weighed_list = generateWeighedList(users, userWeights);
+
+                var randomIndex = randomizer(0, weighted_list.length-1);
+
+                console.log(weighted_list[randomIndex]);
+            }
+        }
+    });
+    */
+</script>
+<script>
+(function() {
+
+    //add projects to featured
+    $.ajax({
+        dataType: "json",
+        url: "/static/projectData.json",
+        cache: false,  //do not cache
+        success: function(data){
+
+            var arrItems = [];
+            $.each(data, function (index, value) {
+                arrItems.push(value);
+            });
+
+            var uid = "RQF8D7xIRAhISy0OQKe9LuARrrU2";
+            var identAlgo = "855";
+            for (var i = 0; i < arrItems.length ; i++) {
+                if (uid == arrItems[i]['uid']) {
+                    if (identAlgo == arrItems[i]['identifier']) {
+
+                        //get data
+                        var ident = arrItems[i]['identifier'];
+                        var projName = arrItems[i]['name'];
+                        var projDesc = arrItems[i]['desc'];
+                        var imgLink = arrItems[i]['imgurl'];
+
+
+                        //create elements
+                        var divContainer = document.createElement("a");
+                        divContainer.id = ident;
+                        divContainer.href="/profile_" + uid;
+                        document.getElementById("featuredContainer").appendChild(divContainer);
+
+                        var nestedDiv = document.createElement("div");
+                        var nestedIdent = ident + "x"
+                        nestedDiv.id = nestedIdent
+                        nestedDiv.className = "uk-card container"
+                        nestedDiv.style.height = "700px";
+                        nestedDiv.style.width = "500px";
+                        nestedDiv.style.borderRadius = "20px";
+                        document.getElementById(ident).appendChild(nestedDiv);
+
+                        var image = document.createElement("img");
+                        image.style.objectFit = "cover";
+                        image.style.height = "-webkit-fill-available";
+                        image.style.borderRadius = "20px";
+                        image.src = imgLink
+                        document.getElementById(nestedIdent).appendChild(image);
+
+                        var footer = document.createElement("footer");
+                        footer.className = "uk-card-body loginButton";
+                        footer.style.position = "inherit";
+                        footer.style.color = "#362c2b";
+                        footer.innerHTML = projName + "<br />" + projDesc;
+                        document.getElementById(nestedIdent).appendChild(footer);
+
+                    }
+
+                }
+            }
+        }
+    });
+    $.ajax({
+        dataType: "json",
+        url: "/static/projectData.json",
+        cache: false,  //do not cache
+        success: function(data){
+
+            var arrItems = [];
+            $.each(data, function (index, value) {
+                arrItems.push(value);
+            });
+
+            var uid = "0R7aB9Gx7wT6k2tpsAlQriGkMZ23";
+            var identAlgo = "884";
+            for (var i = 0; i < arrItems.length ; i++) {
+                if (uid == arrItems[i]['uid']) {
+                    if (identAlgo == arrItems[i]['identifier']) {
+
+                        //get data
+                        var ident = arrItems[i]['identifier'];
+                        var projName = arrItems[i]['name'];
+                        var projDesc = arrItems[i]['desc'];
+                        var imgLink = arrItems[i]['imgurl'];
+
+
+                        //create elements
+                        var divContainer = document.createElement("a");
+                        divContainer.id = ident;
+                        divContainer.href="/profile_" + uid;
+                        document.getElementById("featuredContainer").appendChild(divContainer);
+
+                        var nestedDiv = document.createElement("div");
+                        var nestedIdent = ident + "x"
+                        nestedDiv.id = nestedIdent
+                        nestedDiv.className = "uk-card container"
+                        nestedDiv.style.height = "700px";
+                        nestedDiv.style.width = "500px";
+                        nestedDiv.style.borderRadius = "20px";
+                        document.getElementById(ident).appendChild(nestedDiv);
+
+                        var image = document.createElement("img");
+                        image.style.objectFit = "cover";
+                        image.style.height = "-webkit-fill-available";
+                        image.style.borderRadius = "20px";
+                        image.src = imgLink
+                        document.getElementById(nestedIdent).appendChild(image);
+
+                        var footer = document.createElement("footer");
+                        footer.className = "uk-card-body loginButton";
+                        footer.style.position = "inherit";
+                        footer.style.color = "#362c2b";
+                        footer.innerHTML = projName + "<br />" + projDesc;
+                        document.getElementById(nestedIdent).appendChild(footer);
+
+                    }
+
+                }
+            }
+        }
+    });
+    $.ajax({
+        dataType: "json",
+        url: "/static/projectData.json",
+        cache: false,  //do not cache
+        success: function(data){
+
+            var arrItems = [];
+            $.each(data, function (index, value) {
+                arrItems.push(value);
+            });
+
+            var uid = "XMKMODQWCGOfmLQN7vDL28QiPkA2";
+            var identAlgo = "684";
+            for (var i = 0; i < arrItems.length ; i++) {
+                if (uid == arrItems[i]['uid']) {
+                    if (identAlgo == arrItems[i]['identifier']) {
+
+                        //get data
+                        var ident = arrItems[i]['identifier'];
+                        var projName = arrItems[i]['name'];
+                        var projDesc = arrItems[i]['desc'];
+                        var imgLink = arrItems[i]['imgurl'];
+
+
+                        //create elements
+                        var divContainer = document.createElement("a");
+                        divContainer.id = ident;
+                        divContainer.href="/profile_" + uid;
+                        document.getElementById("featuredContainer").appendChild(divContainer);
+
+                        var nestedDiv = document.createElement("div");
+                        var nestedIdent = ident + "x"
+                        nestedDiv.id = nestedIdent
+                        nestedDiv.className = "uk-card container"
+                        nestedDiv.style.height = "700px";
+                        nestedDiv.style.width = "500px";
+                        nestedDiv.style.borderRadius = "20px";
+                        document.getElementById(ident).appendChild(nestedDiv);
+
+                        var image = document.createElement("img");
+                        image.style.objectFit = "cover";
+                        image.style.height = "-webkit-fill-available";
+                        image.style.borderRadius = "20px";
+                        image.src = imgLink
+                        document.getElementById(nestedIdent).appendChild(image);
+
+                        var footer = document.createElement("footer");
+                        footer.className = "uk-card-body loginButton";
+                        footer.style.position = "inherit";
+                        footer.style.color = "#362c2b";
+                        footer.innerHTML = projName + "<br />" + projDesc;
+                        document.getElementById(nestedIdent).appendChild(footer);
+
+                    }
+
+                }
+            }
+        }
+    });
+
+    //add projects to explore
+    $.ajax({
+        dataType: "json",
+        url: "/static/projectData.json",
+        cache: false,  //do not cache
+        success: function(data){
+
+            var arrItems = [];
+            $.each(data, function (index, value) {
+                arrItems.push(value);
+            });
+
+            var uid = "IqozlGVPuRdr4EWttbHInsdU3zF2";
+            var identAlgo = "858";
+            for (var i = 0; i < arrItems.length ; i++) {
+                if (uid == arrItems[i]['uid']) {
+                    if (identAlgo == arrItems[i]['identifier']) {
+
+                        //get data
+                        var ident = arrItems[i]['identifier'];
+                        var projName = arrItems[i]['name'];
+                        var projDesc = arrItems[i]['desc'];
+                        var imgLink = arrItems[i]['imgurl'];
+
+
+                        //create elements
+                        var divContainer = document.createElement("a");
+                        divContainer.id = ident;
+                        divContainer.href="/profile_" + uid;
+                        document.getElementById("exploreContainer").appendChild(divContainer);
+
+                        var nestedDiv = document.createElement("div");
+                        var nestedIdent = ident + "x"
+                        nestedDiv.id = nestedIdent
+                        nestedDiv.className = "uk-card container"
+                        nestedDiv.style.height = "700px";
+                        nestedDiv.style.width = "500px";
+                        nestedDiv.style.borderRadius = "20px";
+                        document.getElementById(ident).appendChild(nestedDiv);
+
+                        var image = document.createElement("img");
+                        image.style.objectFit = "cover";
+                        image.style.height = "-webkit-fill-available";
+                        image.style.borderRadius = "20px";
+                        image.src = imgLink
+                        document.getElementById(nestedIdent).appendChild(image);
+
+                        var footer = document.createElement("footer");
+                        footer.className = "uk-card-body loginButton";
+                        footer.style.position = "inherit";
+                        footer.style.color = "#362c2b";
+                        footer.innerHTML = projName + "<br />" + projDesc;
+                        document.getElementById(nestedIdent).appendChild(footer);
+
+                    }
+
+                }
+            }
+        }
+    });
+    $.ajax({
+        dataType: "json",
+        url: "/static/projectData.json",
+        cache: false,  //do not cache
+        success: function(data){
+
+            var arrItems = [];
+            $.each(data, function (index, value) {
+                arrItems.push(value);
+            });
+
+            var uid = "IqozlGVPuRdr4EWttbHInsdU3zF2";
+            var identAlgo = "978";
+            for (var i = 0; i < arrItems.length ; i++) {
+                if (uid == arrItems[i]['uid']) {
+                    if (identAlgo == arrItems[i]['identifier']) {
+
+                        //get data
+                        var ident = arrItems[i]['identifier'];
+                        var projName = arrItems[i]['name'];
+                        var projDesc = arrItems[i]['desc'];
+                        var imgLink = arrItems[i]['imgurl'];
+
+
+                        //create elements
+                        var divContainer = document.createElement("a");
+                        divContainer.id = ident;
+                        divContainer.href="/profile_" + uid;
+                        document.getElementById("exploreContainer").appendChild(divContainer);
+
+                        var nestedDiv = document.createElement("div");
+                        var nestedIdent = ident + "x"
+                        nestedDiv.id = nestedIdent
+                        nestedDiv.className = "uk-card container"
+                        nestedDiv.style.height = "700px";
+                        nestedDiv.style.width = "500px";
+                        nestedDiv.style.borderRadius = "20px";
+                        document.getElementById(ident).appendChild(nestedDiv);
+
+                        var image = document.createElement("img");
+                        image.style.objectFit = "cover";
+                        image.style.height = "-webkit-fill-available";
+                        image.style.borderRadius = "20px";
+                        image.src = imgLink
+                        document.getElementById(nestedIdent).appendChild(image);
+
+                        var footer = document.createElement("footer");
+                        footer.className = "uk-card-body loginButton";
+                        footer.style.position = "inherit";
+                        footer.style.color = "#362c2b";
+                        footer.innerHTML = projName + "<br />" + projDesc;
+                        document.getElementById(nestedIdent).appendChild(footer);
+
+                    }
+
+                }
+            }
+        }
+    });
+    $.ajax({
+        dataType: "json",
+        url: "/static/projectData.json",
+        cache: false,  //do not cache
+        success: function(data){
+
+            var arrItems = [];
+            $.each(data, function (index, value) {
+                arrItems.push(value);
+            });
+
+            var uid = "IqozlGVPuRdr4EWttbHInsdU3zF2";
+            var identAlgo = "248";
+            for (var i = 0; i < arrItems.length ; i++) {
+                if (uid == arrItems[i]['uid']) {
+                    if (identAlgo == arrItems[i]['identifier']) {
+
+                        //get data
+                        var ident = arrItems[i]['identifier'];
+                        var projName = arrItems[i]['name'];
+                        var projDesc = arrItems[i]['desc'];
+                        var imgLink = arrItems[i]['imgurl'];
+
+
+                        //create elements
+                        var divContainer = document.createElement("a");
+                        divContainer.id = ident;
+                        divContainer.href="/profile_" + uid;
+                        document.getElementById("exploreContainer").appendChild(divContainer);
+
+                        var nestedDiv = document.createElement("div");
+                        var nestedIdent = ident + "x"
+                        nestedDiv.id = nestedIdent
+                        nestedDiv.className = "uk-card container"
+                        nestedDiv.style.height = "700px";
+                        nestedDiv.style.width = "500px";
+                        nestedDiv.style.borderRadius = "20px";
+                        document.getElementById(ident).appendChild(nestedDiv);
+
+                        var image = document.createElement("img");
+                        image.style.objectFit = "cover";
+                        image.style.height = "-webkit-fill-available";
+                        image.style.borderRadius = "20px";
+                        image.src = imgLink
+                        document.getElementById(nestedIdent).appendChild(image);
+
+                        var footer = document.createElement("footer");
+                        footer.className = "uk-card-body loginButton";
+                        footer.style.position = "inherit";
+                        footer.style.color = "#362c2b";
+                        footer.innerHTML = projName + "<br />" + projDesc;
+                        document.getElementById(nestedIdent).appendChild(footer);
+
+                    }
+
+                }
+            }
+        }
+    });
+    $.ajax({
+        dataType: "json",
+        url: "/static/projectData.json",
+        cache: false,  //do not cache
+        success: function(data){
+
+            var arrItems = [];
+            $.each(data, function (index, value) {
+                arrItems.push(value);
+            });
+
+            var uid = "IqozlGVPuRdr4EWttbHInsdU3zF2";
+            var identAlgo = "647";
+            for (var i = 0; i < arrItems.length ; i++) {
+                if (uid == arrItems[i]['uid']) {
+                    if (identAlgo == arrItems[i]['identifier']) {
+
+                        //get data
+                        var ident = arrItems[i]['identifier'];
+                        var projName = arrItems[i]['name'];
+                        var projDesc = arrItems[i]['desc'];
+                        var imgLink = arrItems[i]['imgurl'];
+
+
+                        //create elements
+                        var divContainer = document.createElement("a");
+                        divContainer.id = ident;
+                        divContainer.href="/profile_" + uid;
+                        document.getElementById("exploreContainer").appendChild(divContainer);
+
+                        var nestedDiv = document.createElement("div");
+                        var nestedIdent = ident + "x"
+                        nestedDiv.id = nestedIdent
+                        nestedDiv.className = "uk-card container"
+                        nestedDiv.style.height = "700px";
+                        nestedDiv.style.width = "500px";
+                        nestedDiv.style.borderRadius = "20px";
+                        document.getElementById(ident).appendChild(nestedDiv);
+
+                        var image = document.createElement("img");
+                        image.style.objectFit = "cover";
+                        image.style.height = "-webkit-fill-available";
+                        image.style.borderRadius = "20px";
+                        image.src = imgLink
+                        document.getElementById(nestedIdent).appendChild(image);
+
+                        var footer = document.createElement("footer");
+                        footer.className = "uk-card-body loginButton";
+                        footer.style.position = "inherit";
+                        footer.style.color = "#362c2b";
+                        footer.innerHTML = projName + "<br />" + projDesc;
+                        document.getElementById(nestedIdent).appendChild(footer);
+
+                    }
+
+                }
+            }
+        }
+    });
+    $.ajax({
+        dataType: "json",
+        url: "/static/projectData.json",
+        cache: false,  //do not cache
+        success: function(data){
+
+            var arrItems = [];
+            $.each(data, function (index, value) {
+                arrItems.push(value);
+            });
+
+            var uid = "IqozlGVPuRdr4EWttbHInsdU3zF2";
+            var identAlgo = "731";
+            for (var i = 0; i < arrItems.length ; i++) {
+                if (uid == arrItems[i]['uid']) {
+                    if (identAlgo == arrItems[i]['identifier']) {
+
+                        //get data
+                        var ident = arrItems[i]['identifier'];
+                        var projName = arrItems[i]['name'];
+                        var projDesc = arrItems[i]['desc'];
+                        var imgLink = arrItems[i]['imgurl'];
+
+
+                        //create elements
+                        var divContainer = document.createElement("a");
+                        divContainer.id = ident;
+                        divContainer.href="/profile_" + uid;
+                        document.getElementById("exploreContainer").appendChild(divContainer);
+
+                        var nestedDiv = document.createElement("div");
+                        var nestedIdent = ident + "x"
+                        nestedDiv.id = nestedIdent
+                        nestedDiv.className = "uk-card container"
+                        nestedDiv.style.height = "700px";
+                        nestedDiv.style.width = "500px";
+                        nestedDiv.style.borderRadius = "20px";
+                        document.getElementById(ident).appendChild(nestedDiv);
+
+                        var image = document.createElement("img");
+                        image.style.objectFit = "cover";
+                        image.style.height = "-webkit-fill-available";
+                        image.style.borderRadius = "20px";
+                        image.src = imgLink
+                        document.getElementById(nestedIdent).appendChild(image);
+
+                        var footer = document.createElement("footer");
+                        footer.className = "uk-card-body loginButton";
+                        footer.style.position = "inherit";
+                        footer.style.color = "#362c2b";
+                        footer.innerHTML = projName + "<br />" + projDesc;
+                        document.getElementById(nestedIdent).appendChild(footer);
+
+                    }
+
+                }
+            }
+        }
+    });
+    $.ajax({
+        dataType: "json",
+        url: "/static/projectData.json",
+        cache: false,  //do not cache
+        success: function(data){
+
+            var arrItems = [];
+            $.each(data, function (index, value) {
+                arrItems.push(value);
+            });
+
+            var uid = "IqozlGVPuRdr4EWttbHInsdU3zF2";
+            var identAlgo = "13";
+            for (var i = 0; i < arrItems.length ; i++) {
+                if (uid == arrItems[i]['uid']) {
+                    if (identAlgo == arrItems[i]['identifier']) {
+
+                        //get data
+                        var ident = arrItems[i]['identifier'];
+                        var projName = arrItems[i]['name'];
+                        var projDesc = arrItems[i]['desc'];
+                        var imgLink = arrItems[i]['imgurl'];
+
+
+                        //create elements
+                        var divContainer = document.createElement("a");
+                        divContainer.id = ident;
+                        divContainer.href="/profile_" + uid;
+                        document.getElementById("exploreContainer").appendChild(divContainer);
+
+                        var nestedDiv = document.createElement("div");
+                        var nestedIdent = ident + "x"
+                        nestedDiv.id = nestedIdent
+                        nestedDiv.className = "uk-card container"
+                        nestedDiv.style.height = "700px";
+                        nestedDiv.style.width = "500px";
+                        nestedDiv.style.borderRadius = "20px";
+                        document.getElementById(ident).appendChild(nestedDiv);
+
+                        var image = document.createElement("img");
+                        image.style.objectFit = "cover";
+                        image.style.height = "-webkit-fill-available";
+                        image.style.borderRadius = "20px";
+                        image.src = imgLink
+                        document.getElementById(nestedIdent).appendChild(image);
+
+                        var footer = document.createElement("footer");
+                        footer.className = "uk-card-body loginButton";
+                        footer.style.position = "inherit";
+                        footer.style.color = "#362c2b";
+                        footer.innerHTML = projName + "<br />" + projDesc;
+                        document.getElementById(nestedIdent).appendChild(footer);
+
+                    }
+
+                }
+            }
+        }
+    });
+
+}());
+</script>
+<script>
+(function() {
+
+    const btnHome = document.getElementById('home');
+    const btnLogout = document.getElementById('logout');
+
+    btnLogout.addEventListener('click', e => {
+        firebase.auth().signOut();
+    });
+
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+        if (firebaseUser) {
+            console.log(firebaseUser);
+            btnLogout.classList.remove('hide');
+            btnHome.classList.remove('hide');
+        } else {
+            console.log('not logged in');
+            btnLogout.classList.add('hide');
+            btnHome.classList.add('hide');
+        }
+    });
+}());
+</script>
+
+
+</html>

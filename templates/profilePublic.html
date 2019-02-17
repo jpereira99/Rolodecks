@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rolodecks - Home</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- favicon --> <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/uikit.min.css') }}" />
+    <script src="{{ url_for('static', filename='js/uikit.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/uikit-icons.min.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Raleway:500,600,700,800" rel="stylesheet">
+
+    <style>
+        .navText{
+            font-family: Raleway;
+            font-weight: 700;
+            color: #362c2b;
+            text-decoration: none;
+        }
+
+        .headerText{
+            font-family: Raleway;
+            font-weight: 500;
+            font-size: 3em;
+            color: #362c2b;
+            text-decoration: none;
+        }
+
+        .hide{
+        visibility: hidden;
+        }
+
+        .loginButton {
+          background-color: white;
+          border: none;
+          font-family: Raleway;
+          font-weight: 800;
+          font-size: 1em;
+          color: #362c2b;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          border-radius: 30px;
+        }
+
+        .signupButton {
+          background-color: #4acb44;
+          border: none;
+          font-family: Raleway;
+          font-weight: 800;
+          font-size: 1em;
+          color: white;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          border-radius: 30px;
+        }
+
+        .publicButton {
+          background-color: #362c2b;
+          border: none;
+          font-family: Raleway;
+          font-weight: 800;
+          font-size: 1em;
+          color: white;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          border-radius: 30px;
+        }
+        .projButton {
+          background-color: #362c2b;
+          border: none;
+          font-family: Raleway;
+          font-weight: 800;
+          font-size: 1em;
+          color: white;
+          padding: 10px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          border-radius: 30px;
+        }
+
+        .breakBar{
+          width: 100%; height: 2px;
+          border-style: solid;
+          border-color: #362c2b;
+          background-color: #362c2b;
+          border-radius: 10px;
+        }
+
+        div.fill {
+            position:relative;
+            border:1px dashed red;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            overflow:hidden
+        }
+        div.fill img {
+            flex-shrink:0;
+            min-width:100%;
+            min-height:100%
+        }
+        header,footer{
+            position:absolute;
+            left:0
+        }
+        header { top:20% }
+        footer { bottom:20% }
+
+        .container {
+            width: 150px;
+            height: 100px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+        }​
+
+    </style>
+
+    <!-- FIREBASE INIT --->
+    <script src="https://www.gstatic.com/firebasejs/5.8.3/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyA023tPMmwN6_oxut1PcNQBtGhiwaG2iBQ",
+        authDomain: "rolodecks-74559.firebaseapp.com",
+        databaseURL: "https://rolodecks-74559.firebaseio.com",
+        projectId: "rolodecks-74559",
+        storageBucket: "rolodecks-74559.appspot.com",
+        messagingSenderId: "841814280785"
+      };
+      firebase.initializeApp(config);
+    </script>
+
+</head>
+<body>
+
+<div id="main" uk-height-viewport="expand" class="uk-background-cover uk-width-expand">
+
+    <div id="navigation">
+
+        <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
+
+            <div class="uk-navbar-left navText">
+
+                <ul class="uk-navbar-nav">
+                    <a class="uk-navbar-item uk-logo" href="/"><img src="/static/Graphics/logo.png" style="height: 80px;"></a>
+                    <li><a href="/explore" style="color: #362c2b;">EXPLORE</a></li>
+                </ul>
+
+            </div>
+
+            <div class="uk-navbar-right" navText>
+
+                <ul class="uk-navbar-nav">
+                    <li><a id="home" class="hide" href="/profile" style="color: #362c2b; font-family: Raleway; font-weight: 700;">YOUR PROFILE</a></li>
+                    <li><a id="logout" class="hide" style="color: #362c2b; font-family: Raleway; font-weight: 700;">LOGOUT</a></li>
+                </ul>
+
+            </div>
+
+        </nav>
+
+    </div>
+
+    <div id="greeting" class="uk-padding uk-padding-remove-bottom">
+        <p id="user" class="navText uk-padding" style="display: inline; font-size: 3em;"></p>
+    </div>
+
+    <div class="uk-padding-large"><div class="breakBar"></div></div>
+
+
+    <div id="container" class="uk-child-width-1-3 uk-padding" uk-grid style="text-align:center">
+    </div>
+
+
+
+</div>
+
+</body>
+
+<script>
+(function() {
+
+    //add name to profile
+    $.ajax({
+        dataType: "json",
+        url: "/static/userData.json",
+        cache: false,  //do not cache
+        success: function(data){
+
+            var arrItems = [];
+            $.each(data, function (index, value) {
+                arrItems.push(value);
+            });
+
+            var uid = "{{user}}";
+            for (var i = 0; i < arrItems.length ; i++) {
+                if (uid == arrItems[i]['uid']) {
+
+                    var username = arrItems[i]['username']
+                    $("#greeting").find("p").html(username + "'s decks");
+                }
+            }
+        }
+    });
+
+    //add projects to profile
+    $.ajax({
+        dataType: "json",
+        url: "/static/projectData.json",
+        cache: false,  //do not cache
+        success: function(data){
+
+            var arrItems = [];
+            $.each(data, function (index, value) {
+                arrItems.push(value);
+            });
+
+            var uid = "{{user}}";
+            for (var i = 0; i < arrItems.length ; i++) {
+                if (uid == arrItems[i]['uid']) {
+
+                    //get data
+                    var ident = arrItems[i]['identifier'];
+                    var projName = arrItems[i]['name'];
+                    var projDesc = arrItems[i]['desc'];
+                    var imgLink = arrItems[i]['imgurl'];
+
+
+                    //create elements
+                    var divContainer = document.createElement("a");
+                    divContainer.id = ident;
+                    divContainer.href="/profile_" + "{{user}}";
+                    document.getElementById("container").appendChild(divContainer);
+
+                    var nestedDiv = document.createElement("div");
+                    var nestedIdent = ident + "x"
+                    nestedDiv.id = nestedIdent
+                    nestedDiv.className = "uk-card container"
+                    nestedDiv.style.height = "700px";
+                    nestedDiv.style.width = "500px";
+                    nestedDiv.style.borderRadius = "20px";
+                    document.getElementById(ident).appendChild(nestedDiv);
+
+                    var image = document.createElement("img");
+                    image.style.objectFit = "cover";
+                    image.style.height = "-webkit-fill-available";
+                    image.style.borderRadius = "20px";
+                    image.src = imgLink
+                    document.getElementById(nestedIdent).appendChild(image);
+
+                    var footer = document.createElement("footer");
+                    footer.className = "uk-card-body loginButton";
+                    footer.style.position = "inherit";
+                    footer.style.color = "#362c2b";
+                    footer.innerHTML = projName + "<br />" + projDesc;
+                    document.getElementById(nestedIdent).appendChild(footer);
+
+
+
+                }
+            }
+        }
+    });
+
+
+}());
+</script>
+<script>
+(function() {
+
+    const btnHome = document.getElementById('home');
+    const btnLogout = document.getElementById('logout');
+
+    btnLogout.addEventListener('click', e => {
+        firebase.auth().signOut();
+    });
+
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+        if (firebaseUser) {
+            console.log(firebaseUser);
+            btnLogout.classList.remove('hide');
+            btnHome.classList.remove('hide');
+        } else {
+            console.log('not logged in');
+            btnLogout.classList.add('hide');
+            btnHome.classList.add('hide');
+        }
+    });
+}());
+</script>
+</html>

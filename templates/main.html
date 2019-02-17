@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rolodecks - Home</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- favicon --> <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/uikit.min.css') }}" />
+    <script src="{{ url_for('static', filename='js/uikit.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/uikit-icons.min.js') }}"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Raleway:500,600,700,800" rel="stylesheet">
+
+    <style>
+        .navText{
+            font-family: Raleway;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .headerText{
+            font-family: Raleway;
+            font-weight: 500;
+            font-size: 2em;
+            color: white;
+            text-decoration: none;
+        }
+
+        .hide{
+        visibility: hidden;
+        }
+
+        .loginButton {
+          background-color: white;
+          border: none;
+          font-family: Raleway;
+          font-weight: 800;
+          font-size: 1em;
+          color: #362c2b;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          border-radius: 30px;
+        }
+
+        .signupButton {
+          background-color: #4acb44;
+          border: none;
+          font-family: Raleway;
+          font-weight: 800;
+          font-size: 1em;
+          color: white;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          border-radius: 30px;
+        }
+
+    </style>
+
+    <!-- FIREBASE INIT --->
+    <script src="https://www.gstatic.com/firebasejs/5.8.3/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyA023tPMmwN6_oxut1PcNQBtGhiwaG2iBQ",
+        authDomain: "rolodecks-74559.firebaseapp.com",
+        databaseURL: "https://rolodecks-74559.firebaseio.com",
+        projectId: "rolodecks-74559",
+        storageBucket: "rolodecks-74559.appspot.com",
+        messagingSenderId: "841814280785"
+      };
+      firebase.initializeApp(config);
+    </script>
+
+</head>
+<body>
+
+<div id="main" uk-height-viewport="expand" class="uk-background-cover uk-width-expand" style="background-image: url('static/Graphics/back.png');">
+
+    <div id="navigation">
+
+        <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
+
+            <div class="uk-navbar-left navText">
+
+                <ul class="uk-navbar-nav">
+                    <a class="uk-navbar-item uk-logo" href="/"><img src="/static/Graphics/logo.png" style="height: 80px;"></a>
+                    <li><a href="/explore" style="color: white;">EXPLORE</a></li>
+                </ul>
+
+            </div>
+
+            <div class="uk-navbar-right" navText>
+
+                <ul class="uk-navbar-nav">
+                    <li><a id="home" class="hide" href="/profile" style="color:white; font-family: Raleway; font-weight: 700;">YOUR PROFILE</a></li>
+                    <li><a id="logout" class="hide" style="color:white; font-family: Raleway; font-weight: 700;">LOGOUT</a></li>
+                </ul>
+
+            </div>
+
+        </nav>
+
+    </div>
+
+    <div id="header" class="uk-card headerText" style="text-align: center">
+        <img src="/static/Graphics/logoHeader.png" style=";" class="uk-padding-small">
+        <p>a product is more than its description, so why should you be any different.</p>
+    </div>
+
+    <div id="buttons" class="uk-padding-large" style="text-align:center">
+        <div class="uk-padding-small" style="display: inline;">
+            <button onclick="location.href='/login'" class="loginButton">LOGIN</button>
+        </div>
+        <div id="signUp" class="uk-padding-small" style="display: inline;">
+            <button onclick="location.href='/signup'" class="signupButton">SIGN UP</button>
+        </div>
+    </div>
+
+</div>
+
+
+<div id="footer"></div>
+
+
+
+</body>
+
+<script>
+(function() {
+
+    const btnHome = document.getElementById('home');
+    const btnLogout = document.getElementById('logout');
+
+    btnLogout.addEventListener('click', e => {
+        firebase.auth().signOut();
+    });
+
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+        if (firebaseUser) {
+            console.log(firebaseUser);
+            btnLogout.classList.remove('hide');
+            btnHome.classList.remove('hide');
+        } else {
+            console.log('not logged in');
+            btnLogout.classList.add('hide');
+            btnHome.classList.add('hide');
+        }
+    });
+}());
+</script>
+
+</html>
